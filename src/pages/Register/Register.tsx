@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { RegisterSchema, schema } from '~/utils/rules'
 import Input from '~/components/Input'
-import { registerAccount } from '~/apis/auth.api'
+import authApi from '~/apis/auth.api'
 import { omit } from 'lodash'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosUnprocessableEntityError } from '~/utils/utils'
@@ -12,7 +12,9 @@ import { useContext } from 'react'
 import { AppContext } from '~/contexts/app.context'
 import Button from '~/components/Button'
 
-type FormData = RegisterSchema
+type FormData = Pick<RegisterSchema, 'email' | 'password' | 'confirm_password'>
+
+const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 
 export default function Register() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -23,11 +25,11 @@ export default function Register() {
     setError,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(registerSchema)
   })
 
   const registerAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
   })
 
   // onSubmit chỉ chạy khi tất cả các rules đều được thực hiện
@@ -103,7 +105,7 @@ export default function Register() {
                 isLoading={registerAccountMutation.isPending}
                 disabled={registerAccountMutation.isPending}
               >
-                Đăng Nhập
+                Đăng Ký
               </Button>
 
               <div className='flex items-center justify-center mt-8'>

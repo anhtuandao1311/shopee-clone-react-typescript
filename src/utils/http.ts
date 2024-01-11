@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
 import { HttpStatusCode } from '~/constants/httpStatusCode.enum'
-import { AuthResponse } from '~/types/auth.types'
+import { AuthResponse } from '~/types/auth.type'
 import {
   clearLocalStorage,
   getAccessTokenFromLocalStorage,

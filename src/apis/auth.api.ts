@@ -1,9 +1,10 @@
-import { AuthResponse } from '~/types/auth.types'
+import { AuthResponse } from '~/types/auth.type'
 import http from '~/utils/http'
 
-export const registerAccount = async (body: { email: string; password: string }) =>
-  http.post<AuthResponse>('/register', body)
+const authApi = {
+  registerAccount: async (body: { email: string; password: string }) => http.post<AuthResponse>('/register', body),
+  loginAccount: async (body: { email: string; password: string }) => http.post<AuthResponse>('/login', body),
+  logoutAccount: async () => http.post('/logout')
+}
 
-export const loginAccount = async (body: { email: string; password: string }) => http.post<AuthResponse>('/login', body)
-
-export const logoutAccount = async () => http.post('/logout')
+export default authApi

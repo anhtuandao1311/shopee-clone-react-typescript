@@ -1,4 +1,4 @@
-import { User } from '~/types/user.types'
+import { User } from '~/types/user.type'
 
 export const saveAccessTokenToLocalStorage = (token: string) => {
   localStorage.setItem('access_token', token)
