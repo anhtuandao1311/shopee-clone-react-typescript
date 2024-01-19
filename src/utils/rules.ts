@@ -99,7 +99,8 @@ export const schema = yup.object({
       }
       return price_min !== '' || price_max !== ''
     }
-  })
+  }),
+  name: yup.string().trim().required('Tên sản phẩm không được để trống')
 })
 
 export type RegisterSchema = yup.InferType<typeof schema>

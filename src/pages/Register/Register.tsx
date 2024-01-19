@@ -58,8 +58,8 @@ export default function Register() {
         }
       })
     },
-    (data) => {
-      console.log(data)
+    (errors) => {
+      console.log(errors)
     }
   )
 

@@ -21,3 +21,21 @@ export function formatNumberToSocialStyle(number: number) {
     .format(number)
     .replace('.', ',')
 }
+
+export function calculateSaleRate(originalPrice: number, salePrice: number) {
+  return Math.round(((originalPrice - salePrice) / originalPrice) * 100) + '%'
+}
+
+function removeSpecialCharacter(str: string) {
+  // eslint-disable-next-line no-useless-escape
+  return str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '')
+}
+
+export function generateNameId({ name, id }: { name: string; id: string }) {
+  return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
+}
+
+export function getIdFromNameId(nameId: string) {
+  const arr = nameId.split('-i-')
+  return arr[arr.length - 1]
+}

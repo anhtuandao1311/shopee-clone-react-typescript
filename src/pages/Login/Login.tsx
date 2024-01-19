@@ -56,8 +56,8 @@ export default function Login() {
         }
       })
     },
-    (data) => {
-      console.log(data)
+    (errors) => {
+      console.log(errors)
     }
   )
 
