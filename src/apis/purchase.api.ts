@@ -9,7 +9,7 @@ const purchaseApi = {
   getPurchases: (params: { status: PurchaseListStatus }) =>
     http.get<SuccessResponse<Purchase[]>>('/purchases', { params }),
 
-  buyProducts: (body: { product_id: string; buy_count: number }) =>
+  buyProducts: (body: { product_id: string; buy_count: number }[]) =>
     http.post<SuccessResponse<Purchase[]>>('/purchases/buy-products', body),
 
   updatePurchase: (body: { product_id: string; buy_count: number }) =>

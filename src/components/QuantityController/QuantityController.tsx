@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import InputNumber, { InputNumberProps } from '../InputNumber'
-import { set } from 'lodash'
 
 interface Props extends InputNumberProps {
   max?: number
@@ -8,6 +7,7 @@ interface Props extends InputNumberProps {
   onDecrease?: (value: number) => void
   onType?: (value: number) => void
   classNameWrapper?: string
+  onFocusOut?: (value: number) => void
 }
 
 export default function QuantityController({
@@ -17,13 +17,13 @@ export default function QuantityController({
   onType,
   classNameWrapper = 'ml-10',
   value,
+  onFocusOut,
   ...rest
 }: Props) {
   const [localValue, setLocalValue] = useState<number>(Number(value || 1))
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = Number(event.target.value)
-    console.log(event.target.value)
     if (max && value > max) {
       value = max
     } else if (value < 1) {
@@ -51,6 +51,10 @@ export default function QuantityController({
     setLocalValue(_value)
   }
 
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    onFocusOut && onFocusOut(Number(event.target.value))
+  }
+
   return (
     <div className={'flex items-center ' + classNameWrapper}>
       <button
@@ -70,10 +74,12 @@ export default function QuantityController({
       </button>
       <InputNumber
         className=''
-        classNameInput='h-8 w-14 text-center  rounded-none border border-gray-300 text-gray-600 outline-none'
+        classNameInput='h-8 w-14 text-center rounded-none border border-gray-300 text-gray-600 outline-none'
         classNameError='hidden'
         value={value || localValue}
         onChange={handleChange}
+        onBlur={handleBlur}
+        {...rest}
       />
       <button
         className='flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'
