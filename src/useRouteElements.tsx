@@ -4,12 +4,17 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import RegisterLayout from './layouts/RegisterLayout'
 import MainLayout from './layouts/MainLayout'
-import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import path from './constants/paths'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
+import CartLayout from './layouts/CartLayout'
+import ChangePassword from './pages/User/pages/ChangePassword'
+import HistoryPurchases from './pages/User/pages/HistoryPurchases'
+import UserLayout from './pages/User/layouts/UserLayout'
+import Profile from './pages/User/pages/Profile'
+import NotFound from './pages/NotFound'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -34,7 +39,6 @@ export default function useRouteElements() {
     },
     {
       path: path.productDetail,
-      index: true,
       element: (
         <MainLayout>
           <ProductDetails />
@@ -46,20 +50,34 @@ export default function useRouteElements() {
       element: <ProtectedRoute></ProtectedRoute>,
       children: [
         {
-          path: path.profile,
+          path: path.cart,
           element: (
-            <MainLayout>
-              <Profile />
-            </MainLayout>
+            <CartLayout>
+              <Cart />
+            </CartLayout>
           )
         },
         {
-          path: path.cart,
+          path: path.user,
           element: (
             <MainLayout>
-              <Cart />
+              <UserLayout />
             </MainLayout>
-          )
+          ),
+          children: [
+            {
+              path: path.profile,
+              element: <Profile />
+            },
+            {
+              path: path.changePassword,
+              element: <ChangePassword />
+            },
+            {
+              path: path.historyPurchases,
+              element: <HistoryPurchases />
+            }
+          ]
         }
       ]
     },
@@ -84,6 +102,14 @@ export default function useRouteElements() {
           )
         }
       ]
+    },
+    {
+      path: '*',
+      element: (
+        <MainLayout>
+          <NotFound />
+        </MainLayout>
+      )
     }
   ])
   return routeElements

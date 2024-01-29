@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, useState } from 'react'
+import { InputHTMLAttributes, useState } from 'react'
 import { UseControllerProps, useController } from 'react-hook-form'
 
 export interface InputNumberProps extends InputHTMLAttributes<HTMLInputElement> {

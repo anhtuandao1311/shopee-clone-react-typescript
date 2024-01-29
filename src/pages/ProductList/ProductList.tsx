@@ -12,13 +12,13 @@ export default function ProductList() {
   const queryConfig = useQueryConfig()
   const { data: productData } = useQuery({
     queryKey: ['products', queryConfig],
-    queryFn: () => productApi.getProducts(queryConfig as ProductListConfig)
+    queryFn: () => productApi.getProducts(queryConfig as ProductListConfig),
+    staleTime: 3 * 60 * 1000
   })
 
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => categoryApi.getCategories(),
-    staleTime: 3 * 60 * 1000
+    queryFn: () => categoryApi.getCategories()
   })
 
   return (

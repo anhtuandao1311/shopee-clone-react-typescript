@@ -1,5 +1,7 @@
 import { AxiosError, isAxiosError } from 'axios'
+import config from '~/constants/config'
 import { HttpStatusCode } from '~/constants/httpStatusCode.enum'
+import avatarPlaceholder from '~/assets/avatar_placeholder.png'
 
 // export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
 //   return axios.isAxiosError(error)
@@ -38,4 +40,8 @@ export function generateNameId({ name, id }: { name: string; id: string }) {
 export function getIdFromNameId(nameId: string) {
   const arr = nameId.split('-i-')
   return arr[arr.length - 1]
+}
+
+export const getAvatarUrl = (avatarName?: string) => {
+  return avatarName ? `${config.baseUrl}/images/${avatarName}` : avatarPlaceholder
 }

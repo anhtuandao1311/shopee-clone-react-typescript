@@ -1,4 +1,3 @@
-import { set } from 'lodash'
 import { InputHTMLAttributes, forwardRef, useState } from 'react'
 
 export interface InputNumberProps extends InputHTMLAttributes<HTMLInputElement> {

@@ -9,6 +9,7 @@ import {
   saveProfileToLocalStorage
 } from './auth'
 import path from '~/constants/paths'
+import config from '~/constants/config'
 
 class Http {
   instance: AxiosInstance
@@ -18,7 +19,7 @@ class Http {
   constructor() {
     this.accessToken = getAccessTokenFromLocalStorage()
     this.instance = axios.create({
-      baseURL: 'https://api-ecom.duthanhduoc.com',
+      baseURL: config.baseUrl,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json'
@@ -53,8 +54,16 @@ class Http {
       (error: AxiosError) => {
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data: any | undefined = error.response?.data
-          const message = data.message || error.message
-          toast.error(message)
+
+          // data?.message do khi upload anh qua lon thi loi tra ve ko co message
+          const message = data?.message || error.message
+          toast.error(message, {
+            autoClose: 1000
+          })
+        }
+        if (error.response?.status === HttpStatusCode.Unauthorized) {
+          clearLocalStorage()
+          // window.location.reload()
         }
         return Promise.reject(error)
       }

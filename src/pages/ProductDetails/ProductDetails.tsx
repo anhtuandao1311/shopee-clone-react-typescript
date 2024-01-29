@@ -1,19 +1,22 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import ProductRating from '~/components/ProductRating'
-import { ProductListConfig } from '~/types/product.type'
+import { Product as ProductType, ProductListConfig } from '~/types/product.type'
 import { calculateSaleRate, formatCurrency, formatNumberToSocialStyle, getIdFromNameId } from '~/utils/utils'
 import Product from '../ProductList/components/Product'
 import QuantityController from '~/components/QuantityController'
 import purchaseApi from '~/apis/purchase.api'
-import { queryClient } from '~/main'
 import { purchaseStatus } from '~/constants/purchase'
 import { toast } from 'react-toastify'
+import { AppContext } from '~/contexts/app.context'
 
 export default function ProductDetails() {
+  const { isAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -29,7 +32,7 @@ export default function ProductDetails() {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
   )
-  const queryConfig = { category: product?.category._id }
+  const queryConfig = { page: '1', category: product?.category._id }
   const { data: productData } = useQuery({
     queryKey: ['products', queryConfig],
     queryFn: () => productApi.getProducts(queryConfig as ProductListConfig),
@@ -38,7 +41,11 @@ export default function ProductDetails() {
   })
 
   const addToCartMutation = useMutation({
-    mutationFn: (body: any) => purchaseApi.addToCart(body)
+    mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
+  })
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
   })
 
   useEffect(() => {
@@ -86,12 +93,25 @@ export default function ProductDetails() {
   }
 
   const addToCart = () => {
+    if (!isAuthenticated) return navigate('/login')
     addToCartMutation.mutate(
-      { product_id: product?._id, buy_count: buyCount },
+      { product_id: (product as ProductType)._id, buy_count: buyCount },
       {
         onSuccess: (data) => {
-          toast.success(data.data.message, { autoClose: 2000 })
+          toast.success(data.data.message, { autoClose: 1000 })
           queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchaseStatus.inCart }] })
+        }
+      }
+    )
+  }
+
+  const buyNow = () => {
+    if (!isAuthenticated) return navigate('/login')
+    addToCartMutation.mutate(
+      { product_id: (product as ProductType)._id, buy_count: buyCount },
+      {
+        onSuccess: (data) => {
+          navigate('/cart', { state: { purchaseId: data.data.data._id } })
         }
       }
     )
@@ -224,7 +244,10 @@ export default function ProductDetails() {
                   </svg>
                   Thêm Vào Giỏ Hàng
                 </button>
-                <button className='flex py-4 px-6 bg-orange border rounded-sm border-orange text-white hover:opacity-90 '>
+                <button
+                  className='flex py-4 px-6 bg-orange border rounded-sm border-orange text-white hover:opacity-90 '
+                  onClick={buyNow}
+                >
                   Mua Ngay
                 </button>
               </div>
