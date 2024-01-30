@@ -12,8 +12,10 @@ import purchaseApi from '~/apis/purchase.api'
 import { purchaseStatus } from '~/constants/purchase'
 import { toast } from 'react-toastify'
 import { AppContext } from '~/contexts/app.context'
+import { useTranslation } from 'react-i18next'
 
 export default function ProductDetails() {
+  const { t } = useTranslation('product')
   const { isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -221,7 +223,9 @@ export default function ProductDetails() {
                   value={buyCount}
                   max={product.quantity}
                 />
-                <div className='ml-5 text-sm text-gray-400'>{product.quantity} sản phẩm có sẵn</div>
+                <div className='ml-5 text-sm text-gray-400'>
+                  {product.quantity} {t('available')}
+                </div>
               </div>
               <div className='mt-8 flex items-center'>
                 <button

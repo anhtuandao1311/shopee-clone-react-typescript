@@ -3,7 +3,7 @@ import useQueryConfig from './useQueryConfig'
 import { useForm } from 'react-hook-form'
 import { RegisterSchema, schema } from '~/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { omit } from 'lodash'
+import omit from 'lodash/omit'
 import path from '~/constants/paths'
 
 type FormData = Pick<RegisterSchema, 'name'>
