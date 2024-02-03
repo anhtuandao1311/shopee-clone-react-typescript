@@ -109,7 +109,6 @@ export default function Login() {
             </form>
           </div>
         </div>
-        H
       </div>
     </div>
   )
