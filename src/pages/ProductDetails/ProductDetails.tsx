@@ -49,9 +49,9 @@ export default function ProductDetails() {
     mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
   })
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  })
+  // useEffect(() => {
+  //   window.scrollTo(0, 0)
+  // })
 
   useEffect(() => {
     if (product && product.images.length > 0) {
