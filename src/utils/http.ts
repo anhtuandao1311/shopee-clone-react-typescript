@@ -15,7 +15,7 @@ import { URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from '~/apis/a
 import { isAxiosExpiredTokenError, isAxiosUnauthorizedError } from './utils'
 import { ErrorResponse } from '~/types/utils.type'
 
-class Http {
+export class Http {
   instance: AxiosInstance
 
   // nen khai bao access token o day de luu tren ram
@@ -31,8 +31,8 @@ class Http {
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
-        'expire-access-token': 10, //10s
-        'expire-refresh-token': 60 * 60 //1h
+        'expire-access-token': 10, // 10s
+        'expire-refresh-token': 60 * 60 * 24 // 1 day
       }
     })
 
@@ -66,10 +66,17 @@ class Http {
         return response
       },
       (error: AxiosError) => {
+        if (error.response?.status === HttpStatusCode.BadRequest) {
+          toast.error('Không tìm thấy sản phẩm', {
+            autoClose: 1000
+          })
+        }
+
         // chi toast loi ko phai 422 va 401
         if (
           error.response?.status !== HttpStatusCode.UnprocessableEntity &&
-          error.response?.status !== HttpStatusCode.Unauthorized
+          error.response?.status !== HttpStatusCode.Unauthorized &&
+          error.response?.status !== HttpStatusCode.BadRequest
         ) {
           const data: any | undefined = error.response?.data
           // data?.message co dau ? do khi upload anh qua lon thi loi tra ve ko co message
@@ -95,7 +102,7 @@ class Http {
                   // nen giu refreshTokenRequest khoang 10s cho nhung request tiep theo neu bi 401 thi ko can goi api refresh token nua
                   setTimeout(() => {
                     this.refreshTokenRequest = null
-                  }, 10000)
+                  }, 3000)
                 })
             return this.refreshTokenRequest.then((accessToken) => {
               if (config.headers) config.headers.Authorization = accessToken
@@ -106,9 +113,9 @@ class Http {
           }
 
           // truong hop token ko dung, ko truyen token, token het han va do la refresh token
-          clearLocalStorage()
           this.accessToken = ''
           this.refreshToken = ''
+          clearLocalStorage()
           toast.error(error.response?.data.data?.message || error.response?.data.message)
           // window.location.reload()
         }
@@ -127,9 +134,6 @@ class Http {
         return access_token
       })
       .catch((error) => {
-        clearLocalStorage()
-        this.accessToken = ''
-        this.refreshToken = ''
         throw error
       })
   }

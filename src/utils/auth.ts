@@ -12,7 +12,6 @@ export const saveRefreshTokenToLocalStorage = (token: string) => {
 
 export const clearLocalStorage = () => {
   localStorage.removeItem('access_token')
-  localStorage.removeItem('access_token')
   localStorage.removeItem('refresh_token')
   localStorage.removeItem('profile')
   LocalStorageEventTarget.dispatchEvent(new Event('clearLocalStorage'))

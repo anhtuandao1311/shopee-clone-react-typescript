@@ -30,7 +30,8 @@ export default function SideFilter({ categories, queryConfig }: Props) {
     control,
     handleSubmit,
     trigger,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<FormData>({
     defaultValues: {
       price_min: '',
@@ -58,6 +59,7 @@ export default function SideFilter({ categories, queryConfig }: Props) {
   )
 
   const handleRemoveFilter = () => {
+    reset()
     navigate({
       pathname: path.home,
       search: createSearchParams(omit(queryConfig, ['price_min', 'price_max', 'rating_filter', 'category'])).toString()

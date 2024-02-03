@@ -10,6 +10,7 @@ import { ErrorResponse } from '~/types/utils.type'
 import { schema, RegisterSchema } from '~/utils/rules'
 import { isAxiosUnprocessableEntityError } from '~/utils/utils'
 import authApi from '~/apis/auth.api'
+import { Helmet } from 'react-helmet-async'
 
 type FormData = Pick<RegisterSchema, 'email' | 'password'>
 
@@ -63,6 +64,10 @@ export default function Login() {
 
   return (
     <div className='bg-orange'>
+      <Helmet>
+        <title>Đăng nhập</title>
+        <meta name='description' content='Đăng nhập vào hệ thống' />
+      </Helmet>
       <div className='container lg:bg-[url(./assets/register_background.png)] bg-cover'>
         <div className='grid grid-cols-1 lg:grid-cols-5 py-10 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
@@ -104,6 +109,7 @@ export default function Login() {
             </form>
           </div>
         </div>
+        H
       </div>
     </div>
   )

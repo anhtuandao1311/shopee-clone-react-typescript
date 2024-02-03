@@ -13,6 +13,9 @@ import { purchaseStatus } from '~/constants/purchase'
 import { toast } from 'react-toastify'
 import { AppContext } from '~/contexts/app.context'
 import { useTranslation } from 'react-i18next'
+import { Helmet } from 'react-helmet-async'
+import { convert } from 'html-to-text'
+import NotFound from '../NotFound'
 
 export default function ProductDetails() {
   const { t } = useTranslation('product')
@@ -22,7 +25,7 @@ export default function ProductDetails() {
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
-  const { data: productDetailsData } = useQuery({
+  const { data: productDetailsData, isError } = useQuery({
     queryKey: ['productDetails', id],
     queryFn: () => productApi.getProductDetails(id as string)
   })
@@ -118,10 +121,26 @@ export default function ProductDetails() {
       }
     )
   }
+  if (isError) {
+    console.log(isError)
+    return <NotFound />
+  }
 
   if (!product) return null
+
   return (
     <div className='bg-gray-200 py-6'>
+      <Helmet>
+        <title>{product.name}</title>
+        <meta
+          name='description'
+          content={convert(product.description, {
+            limits: {
+              maxInputLength: 130
+            }
+          })}
+        />
+      </Helmet>
       <div className='container'>
         <div className='bg-white p-4 shadow'>
           <div className='grid grid-cols-12 gap-9'>
